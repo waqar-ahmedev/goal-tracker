@@ -1,10 +1,13 @@
-require('dotenv').config();
-const express = require('express');
+require("dotenv").config();
+const express = require("express");
+const goals = require("./routes/goals");
 const app = express();
 const PORT = 3000;
 
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok' });
+app.use(express.json());
+app.use("/api/goals", goals);
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok" });
 });
 
 app.listen(PORT, () => {
