@@ -1,9 +1,11 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const goals = require("./routes/goals");
 const app = express();
 const PORT = 3000;
 
+app.use(cors({ origin: "http://localhost:5174" }));
 app.use(express.json());
 app.use("/api/goals", goals);
 app.get("/api/health", (req, res) => {
