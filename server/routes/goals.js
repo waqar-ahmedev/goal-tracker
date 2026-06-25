@@ -1,10 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const supabase = require("../supabase");
-
-const TEMP_USER_ID = "test-user-1";
+const { getAuth } = require("@clerk/express");
 
 router.post("/", async (req, res) => {
+  const { userId } = getAuth(req);
+  if (!userId) return res.status(401).json({ error: "Not signed in" });
+
   const {
     title,
     why,
@@ -29,7 +31,7 @@ router.post("/", async (req, res) => {
   const { data, error } = await supabase
     .from("goals")
     .insert({
-      user_id: TEMP_USER_ID,
+      user_id: userId,
       title,
       why,
       horizon,
@@ -46,10 +48,13 @@ router.post("/", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
+  const { userId } = getAuth(req);
+  if (!userId) return res.status(401).json({ error: "Not signed in" });
+
   const { data, error } = await supabase
     .from("goals")
     .select("*")
-    .eq("user_id", TEMP_USER_ID);
+    .eq("user_id", userId);
 
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);

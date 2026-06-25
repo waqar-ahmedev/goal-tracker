@@ -1,17 +1,26 @@
 import { useState, useEffect } from 'react';
-import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/react';
+import { useAuth, Show, SignInButton, SignUpButton, UserButton } from '@clerk/react';
 import GoalForm from './components/GoalForm';
 import GoalList from './components/GoalList';
 
 function App() {
+  const { getToken, isSignedIn } = useAuth();
   const [goals, setGoals] = useState([]);
 
   useEffect(() => {
-    fetch('http://localhost:3000/api/goals')
-      .then(res => res.json())
-      .then(data => setGoals(data))
-      .catch(err => console.error('Failed to fetch goals:', err));
-  }, []);
+    if (!isSignedIn) return;
+
+    async function fetchGoals() {
+      const token = await getToken();
+      const res = await fetch('http://localhost:3000/api/goals', {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setGoals(data);
+    }
+
+    fetchGoals().catch(err => console.error('Failed to fetch goals:', err));
+  }, [isSignedIn]);
 
   function handleGoalCreated(newGoal) {
     setGoals([...goals, newGoal]);

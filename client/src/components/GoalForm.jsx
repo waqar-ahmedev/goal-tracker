@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useAuth } from '@clerk/react';
 
 const INITIAL_FORM = {
   title: '',
@@ -11,6 +12,7 @@ const INITIAL_FORM = {
 };
 
 function GoalForm({ onGoalCreated }) {
+  const { getToken } = useAuth();
   const [form, setForm] = useState(INITIAL_FORM);
   const [error, setError] = useState(null);
   const [submitting, setSubmitting] = useState(false);
@@ -24,9 +26,13 @@ function GoalForm({ onGoalCreated }) {
     setError(null);
     setSubmitting(true);
     try {
+      const token = await getToken();
       const res = await fetch('http://localhost:3000/api/goals', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(form),
       });
       const newGoal = await res.json();
