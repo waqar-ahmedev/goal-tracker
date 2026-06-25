@@ -4,6 +4,7 @@ const cors = require("cors");
 const { clerkMiddleware } = require("@clerk/express");
 const goals = require("./routes/goals");
 const tasks = require("./routes/tasks");
+const logs = require("./routes/logs");
 const app = express();
 const PORT = 3000;
 
@@ -12,6 +13,7 @@ app.use(clerkMiddleware());
 app.use(express.json());
 app.use("/api/goals", goals);
 app.use("/api/tasks", tasks);
+app.use("/api/logs", logs);
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });

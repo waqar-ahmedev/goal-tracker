@@ -2,10 +2,12 @@ import { useState, useEffect } from 'react';
 import { useAuth, Show, SignInButton, SignUpButton, UserButton } from '@clerk/react';
 import GoalForm from './components/GoalForm';
 import GoalList from './components/GoalList';
+import CheckIn from './components/CheckIn';
 
 function App() {
   const { getToken, isSignedIn } = useAuth();
   const [goals, setGoals] = useState([]);
+  const [view, setView] = useState('goals');
 
   useEffect(() => {
     if (!isSignedIn) return;
@@ -31,6 +33,23 @@ function App() {
       <header className="bg-white border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <span className="text-xl font-semibold tracking-tight">Goal OS</span>
         <div className="flex items-center gap-3">
+          <Show when="signed-in">
+            <nav className="flex gap-1 mr-2">
+              <button
+                onClick={() => setView('goals')}
+                className={`px-3 py-1.5 text-sm rounded-lg cursor-pointer ${view === 'goals' ? 'bg-violet-100 text-violet-700 font-medium' : 'text-gray-500 hover:bg-gray-100'}`}
+              >
+                Goals
+              </button>
+              <button
+                onClick={() => setView('checkin')}
+                className={`px-3 py-1.5 text-sm rounded-lg cursor-pointer ${view === 'checkin' ? 'bg-violet-100 text-violet-700 font-medium' : 'text-gray-500 hover:bg-gray-100'}`}
+              >
+                Check-in
+              </button>
+            </nav>
+            <UserButton />
+          </Show>
           <Show when="signed-out">
             <SignInButton mode="modal">
               <button className="px-4 py-2 text-sm border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer">
@@ -43,16 +62,18 @@ function App() {
               </button>
             </SignUpButton>
           </Show>
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
         </div>
       </header>
 
       <main className="max-w-2xl mx-auto px-6 py-10">
         <Show when="signed-in">
-          <GoalForm onGoalCreated={handleGoalCreated} />
-          <GoalList goals={goals} />
+          {view === 'goals' && (
+            <>
+              <GoalForm onGoalCreated={handleGoalCreated} />
+              <GoalList goals={goals} />
+            </>
+          )}
+          {view === 'checkin' && <CheckIn goals={goals} />}
         </Show>
         <Show when="signed-out">
           <div className="text-center mt-20">
