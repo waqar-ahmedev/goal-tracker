@@ -3,6 +3,7 @@ import { useAuth, Show, SignInButton, SignUpButton, UserButton } from '@clerk/re
 import GoalForm from './components/GoalForm';
 import GoalList from './components/GoalList';
 import CheckIn from './components/CheckIn';
+import Timeline from './components/Timeline';
 
 function App() {
   const { getToken, isSignedIn } = useAuth();
@@ -47,6 +48,12 @@ function App() {
               >
                 Check-in
               </button>
+              <button
+                onClick={() => setView('timeline')}
+                className={`px-3 py-1.5 text-sm rounded-lg cursor-pointer ${view === 'timeline' ? 'bg-violet-100 text-violet-700 font-medium' : 'text-gray-500 hover:bg-gray-100'}`}
+              >
+                Timeline
+              </button>
             </nav>
             <UserButton />
           </Show>
@@ -74,6 +81,7 @@ function App() {
             </>
           )}
           {view === 'checkin' && <CheckIn goals={goals} />}
+          {view === 'timeline' && <Timeline goals={goals} />}
         </Show>
         <Show when="signed-out">
           <div className="text-center mt-20">
