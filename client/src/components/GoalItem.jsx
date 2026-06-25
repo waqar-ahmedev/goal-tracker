@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/react';
+import { getRiskStatus, STATUS_COLOURS, STATUS_LABELS, STATUS_TEXT_COLOURS } from '../utils/risk';
 
 function GoalItem({ goal }) {
   const { getToken } = useAuth();
@@ -63,16 +64,22 @@ function GoalItem({ goal }) {
   const done = tasks.filter(t => t.is_done).length;
   const total = tasks.length;
   const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+  const { status, message } = getRiskStatus(goal, done, total);
 
   return (
     <li className="bg-white border border-gray-200 rounded-xl p-5 mb-4">
       <div className="flex items-center justify-between mb-3">
         <h3 className="font-semibold text-gray-900">{goal.title}</h3>
-        <span className="text-xs text-gray-400 capitalize">{goal.horizon} term</span>
+        <div className="flex items-center gap-2">
+          <span className={`text-xs font-medium px-2 py-0.5 rounded-full text-white ${STATUS_COLOURS[status]}`}>
+            {STATUS_LABELS[status]}
+          </span>
+          <span className="text-xs text-gray-400 capitalize">{goal.horizon} term</span>
+        </div>
       </div>
 
       {/* Progress bar */}
-      <div className="mb-4">
+      <div className="mb-2">
         <div className="flex justify-between text-xs text-gray-400 mb-1">
           <span>Progress</span>
           <span>{done} / {total} tasks</span>
@@ -84,6 +91,11 @@ function GoalItem({ goal }) {
           />
         </div>
       </div>
+
+      {/* Risk message */}
+      {message && (
+        <p className={`text-xs mb-3 ${STATUS_TEXT_COLOURS[status]}`}>{message}</p>
+      )}
 
       {/* Task list */}
       <ul className="mb-3 space-y-2">

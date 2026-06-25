@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { getRiskStatus, STATUS_COLOURS } from '../utils/risk';
 
 const HORIZONS = ['short', 'medium', 'long'];
 const today = new Date().toISOString().split('T')[0];
@@ -36,16 +37,18 @@ function Timeline({ goals }) {
       <div className="mt-6 space-y-3">
         {filtered.map(goal => {
           const startPct = toPct(goal.start_date, minMs, maxMs);
-          const endPct = toPct(goal.target_date, minMs, maxMs);
+          const endPct   = toPct(goal.target_date, minMs, maxMs);
+          const { status } = getRiskStatus(goal);
+          const bandColour = STATUS_COLOURS[status] ?? 'bg-violet-400';
           return (
             <div key={goal.id} className="flex items-center gap-3">
               <span className="w-28 shrink-0 text-right text-sm text-gray-600 truncate" title={goal.title}>
                 {goal.title}
               </span>
               <div className="flex-1 relative h-4 bg-gray-100 rounded-full">
-                {/* goal band */}
+                {/* goal band — coloured by risk status */}
                 <div
-                  className="absolute top-0 h-full rounded-full bg-violet-400"
+                  className={`absolute top-0 h-full rounded-full ${bandColour}`}
                   style={{ left: `${startPct}%`, width: `${endPct - startPct}%` }}
                 />
                 {/* today marker */}
