@@ -1,12 +1,12 @@
+import GoalItem from './GoalItem';
+
 function GoalList({ goals }) {
-  if (goals.length === 0) return <p>No goals yet.</p>;
+  if (goals.length === 0) return <p className="text-gray-400 text-sm mt-6">No goals yet.</p>;
 
   return (
-    <ul>
+    <ul className="mt-6 list-none p-0">
       {goals.map(goal => (
-        <li key={goal.id}>
-          <strong>{goal.title}</strong> — {goal.horizon} term
-        </li>
+        <GoalItem key={goal.id} goal={goal} />
       ))}
     </ul>
   );
