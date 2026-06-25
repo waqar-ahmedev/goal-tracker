@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+/* Dark base so there's no white flash behind the app (e.g. overscroll). */
+html {
+  background-color: #09090b; /* zinc-950 */
+  color-scheme: dark;
+}

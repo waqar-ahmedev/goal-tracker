@@ -11,6 +11,11 @@ const INITIAL_FORM = {
   period: 'day',
 };
 
+// Shared field styling — kept in one place so every input matches.
+const labelCls = 'block text-xs font-medium text-zinc-400 mb-1';
+const fieldCls =
+  'w-full text-sm text-zinc-100 placeholder-zinc-600 bg-zinc-950 border border-zinc-800 rounded-lg px-3 py-2 transition-colors focus:outline-none focus:border-orange-500 focus:ring-2 focus:ring-orange-500/30';
+
 function GoalForm({ onGoalCreated }) {
   const { getToken } = useAuth();
   const [form, setForm] = useState(INITIAL_FORM);
@@ -50,38 +55,112 @@ function GoalForm({ onGoalCreated }) {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <input name="title" placeholder="Title" value={form.title} onChange={handleChange} required />
+    <form
+      onSubmit={handleSubmit}
+      className="bg-zinc-900 border border-zinc-800 rounded-xl p-5"
+    >
+      <h3 className="text-sm font-semibold text-zinc-100 mb-4">New goal</h3>
+
+      {error && (
+        <div className="mb-4 rounded-lg border border-red-500/20 bg-red-500/10 text-red-400 text-sm px-3 py-2">
+          {error}
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="title" className={labelCls}>Title</label>
+          <input
+            id="title"
+            name="title"
+            placeholder="e.g. Ship the MVP"
+            value={form.title}
+            onChange={handleChange}
+            required
+            className={fieldCls}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="why" className={labelCls}>
+            Why <span className="text-zinc-600">(optional)</span>
+          </label>
+          <input
+            id="why"
+            name="why"
+            placeholder="What makes this matter?"
+            value={form.why}
+            onChange={handleChange}
+            className={fieldCls}
+          />
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label htmlFor="horizon" className={labelCls}>Horizon</label>
+            <select id="horizon" name="horizon" value={form.horizon} onChange={handleChange} className={fieldCls}>
+              <option value="short">Short term</option>
+              <option value="medium">Medium term</option>
+              <option value="long">Long term</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="period" className={labelCls}>Period</label>
+            <select id="period" name="period" value={form.period} onChange={handleChange} className={fieldCls}>
+              <option value="day">Per day</option>
+              <option value="week">Per week</option>
+            </select>
+          </div>
+
+          <div>
+            <label htmlFor="start_date" className={labelCls}>Start date</label>
+            <input
+              id="start_date"
+              name="start_date"
+              type="date"
+              value={form.start_date}
+              onChange={handleChange}
+              required
+              className={fieldCls}
+            />
+          </div>
+
+          <div>
+            <label htmlFor="target_date" className={labelCls}>Target date</label>
+            <input
+              id="target_date"
+              name="target_date"
+              type="date"
+              value={form.target_date}
+              onChange={handleChange}
+              required
+              className={fieldCls}
+            />
+          </div>
+
+          <div className="sm:col-span-2">
+            <label htmlFor="hours_per_period" className={labelCls}>Hours per period</label>
+            <input
+              id="hours_per_period"
+              name="hours_per_period"
+              type="number"
+              placeholder="e.g. 2"
+              value={form.hours_per_period}
+              onChange={handleChange}
+              required
+              className={fieldCls}
+            />
+          </div>
+        </div>
       </div>
-      <div>
-        <input name="why" placeholder="Why (optional)" value={form.why} onChange={handleChange} />
-      </div>
-      <div>
-        <select name="horizon" value={form.horizon} onChange={handleChange}>
-          <option value="short">Short term</option>
-          <option value="medium">Medium term</option>
-          <option value="long">Long term</option>
-        </select>
-      </div>
-      <div>
-        <label>Start date: <input name="start_date" type="date" value={form.start_date} onChange={handleChange} required /></label>
-      </div>
-      <div>
-        <label>Target date: <input name="target_date" type="date" value={form.target_date} onChange={handleChange} required /></label>
-      </div>
-      <div>
-        <input name="hours_per_period" type="number" placeholder="Hours per period" value={form.hours_per_period} onChange={handleChange} required />
-      </div>
-      <div>
-        <select name="period" value={form.period} onChange={handleChange}>
-          <option value="day">Per day</option>
-          <option value="week">Per week</option>
-        </select>
-      </div>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <button type="submit" disabled={submitting}>
-        {submitting ? 'Saving...' : 'Add Goal'}
+
+      <button
+        type="submit"
+        disabled={submitting}
+        className="mt-5 px-4 py-2 text-sm font-medium bg-orange-500 text-zinc-950 rounded-lg hover:bg-orange-400 disabled:opacity-50 transition-colors cursor-pointer"
+      >
+        {submitting ? 'Saving…' : 'Add goal'}
       </button>
     </form>
   );

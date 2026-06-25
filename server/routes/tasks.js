@@ -36,16 +36,19 @@ router.get("/", async (req, res) => {
   const { userId } = getAuth(req);
   if (!userId) return res.status(401).json({ error: "Not signed in" });
 
+  // goal_id is optional: with it, return that goal's tasks; without it,
+  // return all of the user's tasks (used by the dashboard's single fetch).
   const { goal_id } = req.query;
-  if (!goal_id) return res.status(400).json({ error: "goal_id query param is required" });
 
-  const { data, error } = await supabase
+  let query = supabase
     .from("tasks")
     .select("*")
-    .eq("goal_id", goal_id)
     .eq("user_id", userId)
     .order("created_at", { ascending: true });
 
+  if (goal_id) query = query.eq("goal_id", goal_id);
+
+  const { data, error } = await query;
   if (error) return res.status(500).json({ error: error.message });
   res.json(data);
 });

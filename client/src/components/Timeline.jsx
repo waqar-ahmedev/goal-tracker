@@ -17,35 +17,41 @@ function Timeline({ goals }) {
 
   const filtered = goals.filter(g => g.horizon === horizon);
 
-  if (filtered.length === 0) {
-    return (
-      <div>
+  return (
+    <section className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-sm font-semibold text-zinc-100">Timeline</h2>
         <Tabs horizon={horizon} setHorizon={setHorizon} />
-        <p className="text-sm text-gray-400 mt-8 text-center">No {horizon}-term goals yet.</p>
       </div>
-    );
-  }
 
+      {filtered.length === 0 ? (
+        <p className="text-sm text-zinc-500 py-6 text-center">No {horizon}-term goals yet.</p>
+      ) : (
+        <TimelineBars filtered={filtered} />
+      )}
+    </section>
+  );
+}
+
+function TimelineBars({ filtered }) {
   const minMs = Math.min(...filtered.map(g => new Date(g.start_date).getTime()));
   const maxMs = Math.max(...filtered.map(g => new Date(g.target_date).getTime()));
   const todayPct = Math.max(0, Math.min(100, toPct(today, minMs, maxMs)));
 
   return (
-    <div>
-      <Tabs horizon={horizon} setHorizon={setHorizon} />
-
-      <div className="mt-6 space-y-3">
+    <>
+      <div className="space-y-3">
         {filtered.map(goal => {
           const startPct = toPct(goal.start_date, minMs, maxMs);
-          const endPct   = toPct(goal.target_date, minMs, maxMs);
+          const endPct = toPct(goal.target_date, minMs, maxMs);
           const { status } = getRiskStatus(goal);
-          const bandColour = STATUS_COLOURS[status] ?? 'bg-violet-400';
+          const bandColour = STATUS_COLOURS[status] ?? 'bg-orange-500';
           return (
             <div key={goal.id} className="flex items-center gap-3">
-              <span className="w-28 shrink-0 text-right text-sm text-gray-600 truncate" title={goal.title}>
+              <span className="w-24 shrink-0 text-right text-xs text-zinc-400 truncate" title={goal.title}>
                 {goal.title}
               </span>
-              <div className="flex-1 relative h-4 bg-gray-100 rounded-full">
+              <div className="flex-1 relative h-4 bg-zinc-800 rounded-full">
                 {/* goal band — coloured by risk status */}
                 <div
                   className={`absolute top-0 h-full rounded-full ${bandColour}`}
@@ -53,7 +59,7 @@ function Timeline({ goals }) {
                 />
                 {/* today marker */}
                 <div
-                  className="absolute top-1/2 -translate-y-1/2 w-0.5 h-6 bg-red-400 z-10"
+                  className="absolute top-1/2 -translate-y-1/2 w-0.5 h-6 bg-zinc-100 z-10"
                   style={{ left: `${todayPct}%` }}
                 />
               </div>
@@ -63,15 +69,15 @@ function Timeline({ goals }) {
       </div>
 
       {/* date axis */}
-      <div className="flex justify-between text-xs text-gray-400 mt-2" style={{ paddingLeft: '7.75rem' }}>
+      <div className="flex justify-between text-xs text-zinc-600 mt-3" style={{ paddingLeft: '6.75rem' }}>
         <span>{fmt(new Date(minMs))}</span>
         <div className="flex items-center gap-1">
-          <span className="w-0.5 h-2 bg-red-400 inline-block" />
-          <span className="text-red-400">today</span>
+          <span className="w-0.5 h-2 bg-zinc-100 inline-block" />
+          <span className="text-zinc-400">today</span>
         </div>
         <span>{fmt(new Date(maxMs))}</span>
       </div>
-    </div>
+    </>
   );
 }
 
@@ -82,10 +88,10 @@ function Tabs({ horizon, setHorizon }) {
         <button
           key={h}
           onClick={() => setHorizon(h)}
-          className={`px-4 py-1.5 text-sm rounded-lg capitalize cursor-pointer ${
+          className={`px-3 py-1 text-xs rounded-md capitalize cursor-pointer transition-colors ${
             horizon === h
-              ? 'bg-violet-100 text-violet-700 font-medium'
-              : 'text-gray-500 hover:bg-gray-100'
+              ? 'bg-zinc-800 text-zinc-100 font-medium'
+              : 'text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800/50'
           }`}
         >
           {h}

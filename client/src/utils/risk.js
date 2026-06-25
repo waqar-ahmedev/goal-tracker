@@ -1,9 +1,10 @@
+// Dark-theme friendly. Used for status dots and timeline bands.
 export const STATUS_COLOURS = {
-  'on-track': 'bg-green-400',
-  'slipping':  'bg-amber-400',
-  'at-risk':   'bg-red-400',
-  'done':      'bg-gray-300',
-  'neutral':   'bg-gray-300',
+  'on-track': 'bg-emerald-500',
+  'slipping':  'bg-amber-500',
+  'at-risk':   'bg-red-500',
+  'done':      'bg-zinc-600',
+  'neutral':   'bg-zinc-600',
 };
 
 export const STATUS_LABELS = {
@@ -15,11 +16,11 @@ export const STATUS_LABELS = {
 };
 
 export const STATUS_TEXT_COLOURS = {
-  'on-track': 'text-green-600',
-  'slipping':  'text-amber-600',
-  'at-risk':   'text-red-600',
-  'done':      'text-gray-400',
-  'neutral':   'text-gray-400',
+  'on-track': 'text-emerald-400',
+  'slipping':  'text-amber-400',
+  'at-risk':   'text-red-400',
+  'done':      'text-zinc-500',
+  'neutral':   'text-zinc-500',
 };
 
 /**
